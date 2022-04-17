@@ -7,6 +7,8 @@ defmodule CoinGeckoWeb.Router do
 
   scope "/api", CoinGeckoWeb do
     pipe_through :api
+
+    resources "/coins", CoinController, only: [:create, :index]
   end
 
   # Enables LiveDashboard only for development
