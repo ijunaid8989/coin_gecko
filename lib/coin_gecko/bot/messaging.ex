@@ -30,6 +30,22 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  def post_random_reply(recipient_id, reply) do
+    message =
+      Jason.encode!(%{
+        "messaging_type" => "RESPONSE",
+        "recipient" => %{
+          "id" => recipient_id
+        },
+        "message" => %{
+          "text" => reply
+        }
+      })
+
+    messages_api()
+    |> post(message)
+  end
+
   def post_coins_search_question(recipient_id) do
     message =
       Jason.encode!(%{

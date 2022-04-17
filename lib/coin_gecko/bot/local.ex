@@ -14,4 +14,12 @@ defmodule CoinGecko.Bot.Local do
        "recipient_id" => recipient_id
      }}
   end
+
+  def post_random_reply(recipient_id, _reply) do
+    {:ok,
+     %{
+       "message_id" => "message id",
+       "recipient_id" => recipient_id
+     }}
+  end
 end
