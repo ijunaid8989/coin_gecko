@@ -30,6 +30,39 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  def post_coins_search_question(recipient_id) do
+    message =
+      Jason.encode!(%{
+        "recipient" => %{
+          "id" => recipient_id
+        },
+        "message" => %{
+          "attachment" => %{
+            "type" => "template",
+            "payload" => %{
+              "template_type" => "button",
+              "text" => "Do you want to search coins by name or by ID (Coins ID)?",
+              "buttons" => [
+                %{
+                  "type" => "postback",
+                  "title" => "Name",
+                  "payload" => "SEARCH_BY_NAME"
+                },
+                %{
+                  "type" => "postback",
+                  "title" => "ID (Coins ID)",
+                  "payload" => "SEARCH_BY_ID"
+                }
+              ]
+            }
+          }
+        }
+      })
+
+    messages_api()
+    |> post(message)
+  end
+
   defp messenger_profile_api(), do: Application.get_env(:coin_gecko, :messenger_profile_api)
   defp messages_api(), do: Application.get_env(:coin_gecko, :messages_api)
   defp access_token(), do: Application.get_env(:coin_gecko, :webhook_token)
