@@ -15,6 +15,45 @@ defmodule CoinGeckoWeb.CoinController do
     end
   end
 
+  def create(
+        conn,
+        %{
+          "entry" => [
+            %{
+              "messaging" => [messaging]
+            }
+          ]
+        } = _params
+      ) do
+    IO.inspect(messaging)
+
+    case messaging do
+      %{
+        "postback" => %{
+          "payload" => "GET_STARTED_PAYLOAD"
+        },
+        "sender" => %{"id" => recipient_id}
+      } ->
+        bot().set_mark_seen(recipient_id)
+        bot().post_coins_question(recipient_id)
+
+      %{
+        "message" => %{
+          "nlp" => _nlp,
+          "text" => _text
+        },
+        "sender" => %{"id" => recipient_id}
+      } ->
+        bot().set_mark_seen(recipient_id)
+        bot().post_random_reply(recipient_id, "hmm, Please choose wisely from the above options.")
+
+      _ ->
+        :ok
+    end
+
+    send_resp(conn, :ok, "")
+  end
+
   defp webhook_verify_token(), do: Application.get_env(:coin_gecko, :webhook_token)
 
   defp mode("subscribe" = mode), do: {:ok, mode}
@@ -26,4 +65,6 @@ defmodule CoinGeckoWeb.CoinController do
       false -> {:error, :unauthorized}
     end
   end
+
+  defp bot(), do: Application.get_env(:coin_gecko, :bot_messaging)
 end

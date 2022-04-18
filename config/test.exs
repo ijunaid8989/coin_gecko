@@ -15,3 +15,6 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :coin_gecko,
   webhook_token: "token"
+
+config :coin_gecko,
+  bot_messaging: CoinGecko.Bot.Local

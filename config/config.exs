@@ -24,8 +24,8 @@ config :phoenix, :json_library, Jason
 
 config :coin_gecko,
   messenger_profile_api: "https://graph.facebook.com/v13.0/me/messenger_profile",
-  messages: "https://graph.facebook.com/v13.0/me/messages",
-  graph: "https://graph.facebook.com"
+  messages_api: "https://graph.facebook.com/v13.0/me/messages",
+  graph_api: "https://graph.facebook.com"
 
 config :coin_gecko,
   webhook_token:

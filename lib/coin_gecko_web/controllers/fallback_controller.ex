@@ -6,7 +6,6 @@ defmodule CoinGeckoWeb.FallbackController do
   """
   use CoinGeckoWeb, :controller
 
-  # This clause is an example of how to handle resources that cannot be found.
   def call(conn, {:error, :not_subscribe}) do
     conn
     |> put_status(:bad_request)

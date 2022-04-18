@@ -46,7 +46,11 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
-  def post_coins_search_question(recipient_id) do
+  def post_coins_question(
+        recipient_id,
+        title \\ default_title(),
+        buttons \\ default_buttons()
+      ) do
     message =
       Jason.encode!(%{
         "recipient" => %{
@@ -57,19 +61,8 @@ defmodule CoinGecko.Bot.Messaging do
             "type" => "template",
             "payload" => %{
               "template_type" => "button",
-              "text" => "Do you want to search coins by name or by ID (Coins ID)?",
-              "buttons" => [
-                %{
-                  "type" => "postback",
-                  "title" => "Name",
-                  "payload" => "SEARCH_BY_NAME"
-                },
-                %{
-                  "type" => "postback",
-                  "title" => "ID (Coins ID)",
-                  "payload" => "SEARCH_BY_ID"
-                }
-              ]
+              "text" => title,
+              "buttons" => buttons
             }
           }
         }
@@ -82,7 +75,6 @@ defmodule CoinGecko.Bot.Messaging do
   defp messenger_profile_api(), do: Application.get_env(:coin_gecko, :messenger_profile_api)
   defp messages_api(), do: Application.get_env(:coin_gecko, :messages_api)
   defp access_token(), do: Application.get_env(:coin_gecko, :webhook_token)
-  defp graph_api(), do: Application.get_env(:coin_gecko, :graph)
 
   defp process_response_body({:ok, %HTTPoison.Response{body: body, status_code: 200}}),
     do: Jason.decode(body)
@@ -96,4 +88,20 @@ defmodule CoinGecko.Bot.Messaging do
     |> HTTPoison.post(message, headers, [])
     |> process_response_body()
   end
+
+  defp default_buttons(),
+    do: [
+      %{
+        "type" => "postback",
+        "title" => "Name",
+        "payload" => "SEARCH_BY_NAME"
+      },
+      %{
+        "type" => "postback",
+        "title" => "ID (Coin's ID)",
+        "payload" => "SEARCH_BY_ID"
+      }
+    ]
+
+  defp default_title(), do: "Do you want to search coins by name or by ID (Coin's ID)?"
 end
