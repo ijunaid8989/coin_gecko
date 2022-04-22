@@ -57,7 +57,6 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
-  @type reply :: %{message_id: String.t(), recipient_id: String.t()}
   @spec post_coins_question(recipient_id :: String.t(), title :: String.t(), buttons :: map()) ::
           {:ok, reply()}
   def post_coins_question(
@@ -84,11 +83,9 @@ defmodule CoinGecko.Bot.Messaging do
 
     messages_api()
     |> post(message)
-    |> IO.inspect()
   end
 
-  @type reply :: %{message_id: String.t(), recipient_id: String.t()}
-  @spec post_coins_question(
+  @spec post_quick_reply(
           recipient_id :: String.t(),
           text :: String.t(),
           quick_replies :: [map()]

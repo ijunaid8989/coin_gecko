@@ -4,7 +4,7 @@ defmodule CoinGecko.Bot.Local do
   end
 
   def get_user_details(recipient_id) do
-    {:ok, %{"first_name" => "somename", "id" => recipient_id}}
+    {:ok, %{"first_name" => "first_name", "id" => recipient_id}}
   end
 
   def set_mark_seen(recipient_id) do

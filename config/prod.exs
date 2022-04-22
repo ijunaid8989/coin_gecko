@@ -48,3 +48,7 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+config :coin_gecko,
+  bot_messaging: CoinGecko.Bot.Messaging,
+  api_wrapper: CoinGecko.API.Wrapper
