@@ -17,6 +17,11 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  def get_user_details(recipient_id) do
+    (graph_api() <> "/" <> recipient_id <> "?fields=first_name")
+    |> get()
+  end
+
   def set_mark_seen(recipient_id) do
     message =
       Jason.encode!(%{
@@ -72,14 +77,40 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  def post_quick_reply(recipient_id, text, quick_replies) do
+    message =
+      Jason.encode!(%{
+        "recipient" => %{
+          "id" => recipient_id
+        },
+        "messaging_type" => "RESPONSE",
+        "message" => %{
+          "text" => text,
+          "quick_replies" => quick_replies
+        }
+      })
+
+    messages_api()
+    |> post(message)
+  end
+
   defp messenger_profile_api(), do: Application.get_env(:coin_gecko, :messenger_profile_api)
   defp messages_api(), do: Application.get_env(:coin_gecko, :messages_api)
   defp access_token(), do: Application.get_env(:coin_gecko, :webhook_token)
+  defp graph_api(), do: Application.get_env(:coin_gecko, :graph_api)
 
   defp process_response_body({:ok, %HTTPoison.Response{body: body, status_code: 200}}),
     do: Jason.decode(body)
 
   defp process_response_body(_response), do: {:ok, ""}
+
+  defp get(url) do
+    headers = [{"Content-type", "application/json"}]
+
+    (url <> "&access_token=" <> access_token())
+    |> HTTPoison.get(headers)
+    |> process_response_body()
+  end
 
   defp post(url, message) do
     headers = [{"Content-type", "application/json"}]
@@ -94,12 +125,12 @@ defmodule CoinGecko.Bot.Messaging do
       %{
         "type" => "postback",
         "title" => "Name",
-        "payload" => "SEARCH_BY_NAME"
+        "payload" => "NAME"
       },
       %{
         "type" => "postback",
         "title" => "ID (Coin's ID)",
-        "payload" => "SEARCH_BY_ID"
+        "payload" => "ID"
       }
     ]
 

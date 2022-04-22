@@ -13,7 +13,9 @@ defmodule CoinGecko.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: CoinGecko.PubSub},
       # Start the Endpoint (http/https)
-      CoinGeckoWeb.Endpoint
+      CoinGeckoWeb.Endpoint,
+      {DynamicSupervisor, strategy: :one_for_one, name: CoinGecko.Flow.Supervisor},
+      {Registry, keys: :unique, name: StateRegistry}
       # Start a worker by calling: CoinGecko.Worker.start_link(arg)
       # {CoinGecko.Worker, arg}
     ]
