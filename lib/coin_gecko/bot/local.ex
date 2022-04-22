@@ -11,6 +11,18 @@ defmodule CoinGecko.Bot.Local do
     {:ok, %{"recipient_id" => recipient_id}}
   end
 
+  def post_coins_question(
+        recipient_id,
+        _title,
+        _buttons
+      ) do
+    {:ok,
+     %{
+       "message_id" => "message id",
+       "recipient_id" => recipient_id
+     }}
+  end
+
   def post_coins_search_question(recipient_id, _title, _buttons) do
     {:ok,
      %{

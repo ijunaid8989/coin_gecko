@@ -1,4 +1,5 @@
 defmodule CoinGecko.Bot.Messaging do
+  @spec set_get_started_with_greetings() :: {:ok, map()}
   def set_get_started_with_greetings() do
     message =
       Jason.encode!(%{
@@ -17,11 +18,14 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  @type user :: %{first_name: String.t(), id: String.t()}
+  @spec get_user_details(recipient_id :: String.t()) :: {:ok, user()}
   def get_user_details(recipient_id) do
     (graph_api() <> "/" <> recipient_id <> "?fields=first_name")
     |> get()
   end
 
+  @spec set_mark_seen(recipient_id :: String.t()) :: {:ok, any()}
   def set_mark_seen(recipient_id) do
     message =
       Jason.encode!(%{
@@ -35,6 +39,8 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  @type reply :: %{message_id: String.t(), recipient_id: String.t()}
+  @spec post_random_reply(recipient_id :: String.t(), reply :: String.t()) :: {:ok, reply()}
   def post_random_reply(recipient_id, reply) do
     message =
       Jason.encode!(%{
@@ -51,6 +57,9 @@ defmodule CoinGecko.Bot.Messaging do
     |> post(message)
   end
 
+  @type reply :: %{message_id: String.t(), recipient_id: String.t()}
+  @spec post_coins_question(recipient_id :: String.t(), title :: String.t(), buttons :: map()) ::
+          {:ok, reply()}
   def post_coins_question(
         recipient_id,
         title \\ default_title(),
@@ -75,8 +84,15 @@ defmodule CoinGecko.Bot.Messaging do
 
     messages_api()
     |> post(message)
+    |> IO.inspect()
   end
 
+  @type reply :: %{message_id: String.t(), recipient_id: String.t()}
+  @spec post_coins_question(
+          recipient_id :: String.t(),
+          text :: String.t(),
+          quick_replies :: [map()]
+        ) :: {:ok, reply()}
   def post_quick_reply(recipient_id, text, quick_replies) do
     message =
       Jason.encode!(%{

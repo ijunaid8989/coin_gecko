@@ -1,4 +1,13 @@
 defmodule CoinGecko.API.Wrapper do
+  @type coin :: %{
+          id: String.t(),
+          large: String.t(),
+          name: String.t(),
+          symbol: String.t(),
+          thumb: String.t()
+        }
+  @spec search(text :: String.t(), by :: String.t()) ::
+          {:ok, coin()} | {:ok, [coin()]} | {:error, :not_found}
   def search(text, by) do
     case by do
       "NAME" -> by_name(text)
@@ -6,6 +15,8 @@ defmodule CoinGecko.API.Wrapper do
     end
   end
 
+  @type chart :: [unix_timestamp: integer, usd: integer]
+  @spec market_chart(coin_id :: String.t()) :: [chart] | {:error, :not_found}
   def market_chart(coin_id) do
     (coingecko_api() <> "/coins/" <> coin_id <> "/market_chart?vs_currency=usd&days=14")
     |> get()

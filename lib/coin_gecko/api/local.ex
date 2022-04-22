@@ -1,8 +1,8 @@
 defmodule CoinGecko.API.Local do
-  def search(_text, by) do
+  def search(text, by) do
     case by do
       "NAME" -> {:ok, [coin()]}
-      "ID" -> {:ok, coin()}
+      "ID" -> {:ok, coin(text)}
     end
   end
 
@@ -10,9 +10,9 @@ defmodule CoinGecko.API.Local do
     [[6_675_515, 0.3242424]]
   end
 
-  defp coin() do
+  defp coin(id \\ "magic-token") do
     %{
-      "id" => "magic-token",
+      "id" => id,
       "large" => "https://assets.coingecko.com/coins/test.png",
       "market_cap_rank" => nil,
       "name" => "Magic Token",
