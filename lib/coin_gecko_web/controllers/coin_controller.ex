@@ -3,6 +3,8 @@ defmodule CoinGeckoWeb.CoinController do
 
   action_fallback CoinGeckoWeb.FallbackController
 
+  alias CoinGecko.Flow.Handler
+
   @spec index(any, map) :: {:error, :not_subscribe | :unauthorized} | Plug.Conn.t()
   def index(
         conn,
@@ -25,8 +27,6 @@ defmodule CoinGeckoWeb.CoinController do
           ]
         } = _params
       ) do
-    IO.inspect(messaging)
-
     case messaging do
       %{
         "postback" => %{
@@ -34,18 +34,34 @@ defmodule CoinGeckoWeb.CoinController do
         },
         "sender" => %{"id" => recipient_id}
       } ->
-        bot().set_mark_seen(recipient_id)
-        bot().post_coins_question(recipient_id)
+        Handler.init(recipient_id)
+
+      %{
+        "postback" => %{
+          "payload" => payload
+        },
+        "sender" => %{"id" => recipient_id}
+      }
+      when payload in ["NAME", "ID"] ->
+        Handler.search_payload(recipient_id, payload)
 
       %{
         "message" => %{
           "nlp" => _nlp,
-          "text" => _text
+          "quick_reply" => %{"payload" => coin_id}
         },
         "sender" => %{"id" => recipient_id}
       } ->
-        bot().set_mark_seen(recipient_id)
-        bot().post_random_reply(recipient_id, "hmm, Please choose wisely from the above options.")
+        Handler.send_coins_listings(recipient_id, coin_id)
+
+      %{
+        "message" => %{
+          "nlp" => _nlp,
+          "text" => text
+        },
+        "sender" => %{"id" => recipient_id}
+      } ->
+        Handler.random_reply(recipient_id, text)
 
       _ ->
         :ok
@@ -65,6 +81,4 @@ defmodule CoinGeckoWeb.CoinController do
       false -> {:error, :unauthorized}
     end
   end
-
-  defp bot(), do: Application.get_env(:coin_gecko, :bot_messaging)
 end

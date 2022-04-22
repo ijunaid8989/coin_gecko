@@ -17,4 +17,5 @@ config :coin_gecko,
   webhook_token: "token"
 
 config :coin_gecko,
-  bot_messaging: CoinGecko.Bot.Local
+  bot_messaging: CoinGecko.Bot.Local,
+  api_wrapper: CoinGecko.API.Local

@@ -51,4 +51,5 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :coin_gecko,
-  bot_messaging: CoinGecko.Bot.Messaging
+  bot_messaging: CoinGecko.Bot.Messaging,
+  api_wrapper: CoinGecko.API.Wrapper
