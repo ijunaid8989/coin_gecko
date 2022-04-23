@@ -115,7 +115,12 @@ defmodule CoinGecko.Bot.Messaging do
   defp process_response_body({:ok, %HTTPoison.Response{body: body, status_code: 200}}),
     do: Jason.decode(body)
 
-  defp process_response_body(_response), do: {:ok, ""}
+  defp process_response_body({:error, error}), do: {:error, error}
+
+  defp process_response_body({:ok, %HTTPoison.Response{body: body, status_code: status_code}})
+       when status_code not in [200, 201] do
+    {:error, Jason.decode!(body)}
+  end
 
   defp get(url) do
     headers = [{"Content-type", "application/json"}]

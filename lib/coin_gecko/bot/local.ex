@@ -14,13 +14,26 @@ defmodule CoinGecko.Bot.Local do
   def post_coins_question(
         recipient_id,
         _title,
-        _buttons
+        buttons
       ) do
-    {:ok,
-     %{
-       "message_id" => "message id",
-       "recipient_id" => recipient_id
-     }}
+    case length(buttons) <= 3 do
+      true ->
+        {:ok,
+         %{
+           "message_id" => "message id",
+           "recipient_id" => recipient_id
+         }}
+
+      false ->
+        {:error,
+         %{
+           "error" => %{
+             "code" => 105,
+             "message" => "(#105) param name_placeholder[buttons] has too many elements.",
+             "type" => "OAuthException"
+           }
+         }}
+    end
   end
 
   def post_coins_search_question(recipient_id, _title, _buttons) do
@@ -31,12 +44,26 @@ defmodule CoinGecko.Bot.Local do
      }}
   end
 
-  def post_random_reply(recipient_id, _reply) do
-    {:ok,
-     %{
-       "message_id" => "message id",
-       "recipient_id" => recipient_id
-     }}
+  def post_random_reply(recipient_id, reply) do
+    case String.length(reply) <= 2000 do
+      true ->
+        {:ok,
+         %{
+           "message_id" => "message id",
+           "recipient_id" => recipient_id
+         }}
+
+      false ->
+        {:error,
+         %{
+           "error" => %{
+             "code" => 100,
+             "message" =>
+               "(#100) Length of param message[text] must be less than or equal to 2000",
+             "type" => "OAuthException"
+           }
+         }}
+    end
   end
 
   def post_quick_reply(recipient_id, _text, _quick_replies) do
