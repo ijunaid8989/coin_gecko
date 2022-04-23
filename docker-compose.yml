@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    command: mix phx.server  
+    volumes:
+      - .:/home/app
+    ports:
+      - "4000:4000"
+  test:
+    image: <app_dir>_web
+    command: mix test
+    environment:
+      MIX_ENV: test
+      PORT: 4001
+    volumes:
+      - .:/home/app
